@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  postgres:
+    container_name: postgres
+    image: postgres
+    restart: always
+    ports:
+      - 5488:5432
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+    volumes:
+      - ./db:/var/lib/postgresql/data
+  back:
+    container_name: back
+    image: node
+    restart: always
+    ports:
+      - 7000:7000
+    working_dir: /back
+    volumes:
+      - ./back:/back
+    command: bash -c "npm install && npm start"
+    depends_on:
+      - postgres
+  front:
+    container_name: front
+    image: node
+    restart: always
+    ports:
+      - 3000:3000
+    working_dir: /front
+    volumes:
+      - ./front:/front
+    command: bash -c "npm install && npm run dev"
+    depends_on:
+      - back
+  
